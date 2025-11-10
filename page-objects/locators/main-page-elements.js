@@ -13,7 +13,7 @@ export default class PageElements {
         this.PASSWORD_FIELD = page.locator("#input-password");
         this.CONFIRM_PASSWORD_FIELD = page.locator("#input-confirm");
         this.LOGIN_BTN = page.locator("//button[normalize-space()='Login']");
-        this.MY_ACCOUNT_H2 = page.locator("//h2[normalize-space()='My Account']");
+        this.MY_ACCOUNT_H1 = page.locator(`//h1[normalize-space()='My Account']`);
         this.ERROR_ALERT = page.getByText('Warning: No match for E-Mail');
         this.CONTINUE_REGISTER_BTN = page.locator("//a[normalize-space()='Continue']");
         this.FORGOTTEN_PASSWORD_LINK = page.locator('#form-login').getByRole('link', { name: 'Forgotten Password' });
@@ -40,7 +40,7 @@ export default class PageElements {
         this.PASSWORD_WARNING = page.getByText('Password must be between 4 and 20 characters!')
         this.PRIVACY_POLICY_WARNING = page.getByText('Warning: You must agree to the Privacy Policy!')
         this.REGISTER_CONTINUE_TO_ACCOUNT_BTN = page.locator("//a[normalize-space()='Continue']")
-        this.HOME_ICON = page.locator('.breadcrumb-item').first();
+        this.HOME_ICON = page.locator(`//i[@class='fas fa-home']`);
         this.ENTER_NEW_PASSWORD = page.getByText('Enter the new password you wish to use.', { exact: true });
 
         // Products, Checkout Elements

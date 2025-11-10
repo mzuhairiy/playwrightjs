@@ -25,7 +25,7 @@ test.describe('Login Functionality Tests', () => {
   test.describe('Positive Scenarios', () => {
     test('should successfully login with valid credentials', async ({}) => {
       await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
-      await expect(authElements.MY_ACCOUNT_H2).toBeVisible();
+      await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     });
 
     test('should successfully reset password and login', async ({}) => {
@@ -34,7 +34,7 @@ test.describe('Login Functionality Tests', () => {
       const newPassword = await loginActions.resetPassword();
       await expect(authElements.SUCCESS_FORGOT_PASSWORD).toBeVisible();
       await loginActions.loginFunctions(email, newPassword);
-      await expect(authElements.MY_ACCOUNT_H2).toBeVisible();
+      await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     });
 
     test('should redirect to Register Page from login', async ({}) => {
@@ -44,7 +44,7 @@ test.describe('Login Functionality Tests', () => {
 
     test('should successfully logout after login', async ({}) => {
       await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
-      await expect(authElements.MY_ACCOUNT_H2).toBeVisible();
+      await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
       await loginActions.logoutFunction();
       await expect(authElements.SUCCESSFULLY_LOGOUT_H1).toBeVisible();
     });

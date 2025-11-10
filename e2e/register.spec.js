@@ -27,7 +27,7 @@ test.describe('Register Scenarios POM', () => {
     await actions.registerFunctions(userCreds);
     await expect(locators.REGISTRATION_SUCCESSFUL_TEXT).toBeVisible();
     await locators.REGISTER_CONTINUE_TO_ACCOUNT_BTN.click();
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
+    await expect(locators.MY_ACCOUNT_H1).toBeVisible();
 
     // Checking database
     const userData = await checkUserDataInDatabase(userCreds.email);

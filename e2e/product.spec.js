@@ -1,151 +1,191 @@
 import { test, expect } from '@playwright/test';
 import { generateUserCheckoutData } from '../utils/user-data-generator';
-import ResistStorePage from '../page-objects/actions/main-actions';
-import PageElements from '../page-objects/locators/main-page-elements';
+import ProductActions from '../page-objects/actions/product-actions';
+import LoginAction from '../page-objects/actions/login-actions';
+import ProductElements from '../page-objects/locators/product-page-elements';
+import AuthElements from '../page-objects/locators/auth-page-elements';
 import config from '../app-config/config.json';
+import { logger } from '../utils/logger/logger.js';
+import LoginActions from '../page-objects/actions/login-actions';
 
-test.describe('Product Scenarios POM', () => {
-  /** @type {ResistStorePage} */
-  let actions;
-  /** @type {PageElements} */
-  let locators;
+/**
+ * @file Product test scenarios for Opencart application
+ * @description Tests covering product functionality including viewing, searching, cart operations, and checkout
+ */
+
+test.describe('Product Functionality Tests', () => {
+  /** @type {ProductActions} */
+  let productActions;
+  /** @type {LoginActions} */
+  let loginActions;
+  /** @type {ProductElements} */
+  let productElements;
+  /** @type {AuthElements} */
+  let authElements ;
 
   test.beforeEach(async ({ page }) => {
-    actions = new ResistStorePage(page);
-    locators = new PageElements(page);
-    await actions.gotoAsync(config.baseURL)
-    await expect(page).toHaveTitle(/Resist Store/);
-  })
+    productActions = new ProductActions(page);
+    loginActions = new LoginActions(page);
+    productElements = new ProductElements(page);
+    authElements = new AuthElements(page);
+    await productActions.gotoAsync(config.baseURL);
+    await expect(page).toHaveTitle(/Resist Store/, { timeout: 10000 });
+    logger.info('Starting new test case');
+  });
 
-  test('Should be able to see product details when open a product from the homepage', async ({}) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password)
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.selectRandomProductFromHomepage();
-    const title = await actions.assertProductTitleAndAttributes();
-    await expect(locators.PRODUCT_TITLE_HEADING).toBeVisible();
-    await expect(locators.PRODUCT_ATTRIBUTES).toBeVisible();
+  test('should display product details when opened from homepage', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    
+    await productActions.selectRandomProductFromHomepage();
+    const title = await productActions.assertProductTitleAndAttributes();
+    
+    await expect(productElements.PRODUCT_TITLE_HEADING).toBeVisible();
+    await expect(productElements.PRODUCT_ATTRIBUTES).toBeVisible();
     expect(title).not.toBeNull();
-    expect(actions.productAttributes).not.toBeNull();
+    expect(productActions.productAttributes).not.toBeNull();
+    logger.info(`Successfully viewed product details: ${title}`);
   });
 
-  test('Add a product from the homepage to the cart.', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.addARandomProductFromHomepageToCart();
+  test('should add product to cart from homepage', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    await productActions.addARandomProductFromHomepageToCart();
+    logger.info('Successfully added product to cart from homepage');
   });
 
-  test('Add a product from the product page to the cart. ', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await locators.NAV_DESKTOPS.click();
-    await expect(locators.NAV_DESKTOPS_H2).toBeVisible();
-    await locators.PRODUCT_PAGE_ADD_TO_CART_BTN.click();
-    await expect(locators.H1_PRODUCT).toBeVisible();
+  test('should add product to cart from product page', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    await productElements.NAV_DESKTOPS.click();
+    await expect(productElements.NAV_DESKTOPS_H2).toBeVisible();
+    await productElements.PRODUCT_PAGE_ADD_TO_CART_BTN.click();
+    await expect(productElements.H1_PRODUCT).toBeVisible();
+    logger.info('Successfully added product to cart from product page');
   });
 
-  test('Checkout a product from the homepage - Guest', async ({ page }) => {
+  test('should complete guest checkout process', async ({ page }) => {
     const userData = generateUserCheckoutData();
-    const randomIndex = await actions.addARandomProductFromHomepageToCart();
-    await actions.guestCheckoutFromHomepage(userData);
-    await actions.selectRandomCountry();
-    await actions.selectRandomRegion();
-    await locators.CONTINUE_CO_BTN.click();
-    await expect(locators.SUCCESS_GUEST_USER_INFORMATION).toBeVisible();
+    logger.info('Starting guest checkout process');
+    
+    const randomIndex = await productActions.addARandomProductFromHomepageToCart();
+    await productActions.guestCheckoutFromHomepage(userData);
+    await productActions.selectRandomCountry();
+    await productActions.selectRandomRegion();
+    await productElements.CONTINUE_CO_BTN.click();
+    await expect(productElements.SUCCESS_GUEST_USER_INFORMATION).toBeVisible();
 
     if (randomIndex === 0) {
-      await actions.choosePaymentMethod();
+      await productActions.choosePaymentMethod();
+    } else if (randomIndex === 1) {
+      await productActions.chooseShippingMethod();
+      await productActions.choosePaymentMethod();
     }
-    else if (randomIndex === 1) {
-      await actions.chooseShippingMethod();
-      await actions.choosePaymentMethod();
-    }
-    await locators.COMMENT_FIELD_CO.fill("test checkout");
+    
+    await productElements.COMMENT_FIELD_CO.fill("test checkout");
     await page.waitForTimeout(3000);
-    await locators.CONFIRM_ORDER_BTN.click();
-    await expect(locators.SUCCESS_ORDER_H1).toBeVisible();
-    await expect(locators.SUCCESS_ORDER_H1).toHaveText('Your order has been placed!');
+    await productElements.CONFIRM_ORDER_BTN.click();
+    await expect(productElements.SUCCESS_ORDER_H1).toBeVisible();
+    await expect(productElements.SUCCESS_ORDER_H1).toHaveText('Your order has been placed!');
+    logger.info('Successfully completed guest checkout');
   });
 
-  test('Should be able to do product comparison', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.compareRandomProduct();
-    await expect(locators.PRODUCT_COMPARISON_H1).toBeVisible();
-    await expect(locators.PRODUCT_COMPARISON_CONTENT_TABLE).toBeVisible();
+  test('should compare multiple products', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    
+    await productActions.compareRandomProduct();
+    await expect(productElements.PRODUCT_COMPARISON_H1).toBeVisible();
+    await expect(productElements.PRODUCT_COMPARISON_CONTENT_TABLE).toBeVisible();
+    logger.info('Successfully compared products');
   });
 
-  test('Should be able to remove a single product from cart after adding it from homepage', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.addARandomProductFromHomepageToCart();
-    await actions.CheckRemoveAProductFromCart();
+  test('should remove single product from cart', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    
+    await productActions.addARandomProductFromHomepageToCart();
+    await productActions.CheckRemoveAProductFromCart();
+    logger.info('Successfully removed single product from cart');
   });
 
-  test('Shoulde be able to remove multiple products from cart after adding them from homepage', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.addMultipleProductsFromHomepageToCart();
-    await actions.CheckRemoveProductsFromCart();
+  test('should remove multiple products from cart', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    
+    await productActions.addMultipleProductsFromHomepageToCart(2);
+    await productActions.CheckRemoveProductsFromCart();
+    logger.info('Successfully removed multiple products from cart');
   });
 
-  test('Should be able to search for a product from the homepage', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.searchForProduct();
+  test('should search and find existing products', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    
+    const searchResult = await productActions.searchForProduct();
+    logger.info(`Successfully searched for product: ${searchResult}`);
   });
 
-  test('Should be able to show not found message when searching for a non-existing product', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await actions.searchNonExistingProduct('skincare');
+  test('should show not found message for non-existing products', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    
+    await productActions.searchNonExistingProduct('skincare');
+    logger.info('Successfully verified not found message for non-existing product');
   });
 
-  test('Should be able to do price sorting low to high', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.searchForProduct();
-    await actions.selectSortOption('Price (Low > High)');
-    await expect(locators.PRODUCT_PRICE.first()).toBeVisible();
-    await actions.getAllPrices();
-    const prices = await actions.getAllPrices();
-    const sortedAscending = actions.isSortedAscending(prices);
+  test('should sort products by price low to high', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(productElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    
+    await productActions.searchForProduct();
+    await productActions.selectSortOption('Price (Low > High)');
+    await expect(productElements.PRODUCT_PRICE.first()).toBeVisible();
+    
+    const prices = await productActions.getAllPrices();
+    const sortedAscending = productActions.isSortedAscending(prices);
     expect(sortedAscending).toBeTruthy();
+    logger.info('Successfully verified price sorting (low to high)');
   });
 
-  test('Should be able to do price sorting high to low', async ({ page }) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password);
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await locators.HOME_ICON.click();
-    await expect(locators.FEATURED_H1).toBeVisible();
-    await actions.searchForProduct();
-    await actions.selectSortOption('Price (High > Low)');
-    await expect(locators.PRODUCT_PRICE.first()).toBeVisible();
-    const prices = await actions.getAllPrices();
-    const sortedDescending = await actions.isSortedDescending(prices);
+  test('should sort products by price high to low', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(productElements.MY_ACCOUNT_H1).toBeVisible();
+    await authElements.OPENCART_LOGO.click();
+    await expect(productElements.FEATURED_H1).toBeVisible();
+    
+    await productActions.searchForProduct();
+    await productActions.selectSortOption('Price (High > Low)');
+    await expect(productElements.PRODUCT_PRICE.first()).toBeVisible();
+    
+    const prices = await productActions.getAllPrices();
+    const sortedDescending = productActions.isSortedDescending(prices);
     expect(sortedDescending).toBeTruthy();
- });
-
-  test('User should be able to access all sidebar on the product page', async ({}) => {
-    await actions.loginFunctions(config.validUser.email, config.validUser.password)
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
-    await actions.accessAllNavbarMenus(true);
-    await actions.accessAllSidebarMenus();
+    logger.info('Successfully verified price sorting (high to low)');
   });
+
+  test('should access all sidebar items on product page', async ({}) => {
+    await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
+    await expect(productElements.MY_ACCOUNT_H1).toBeVisible();
+    await productActions.accessAllNavbarMenus(true);
+    await productActions.accessAllSidebarMenus();
+    logger.info('Successfully accessed all sidebar menus');
+});
 });

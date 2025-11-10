@@ -10,8 +10,9 @@ export default class AuthElements {
         this.PRIVACY_POLICY_LINK = page.locator('#form-register').getByRole('link', { name: 'Privacy Policy' });
 
         // HEADINGS / TITLES
+        this.OPENCART_LOGO = page.getByRole('img', { name: 'Resist Store' })
         this.H2_RETURNING_CUSTOMER = page.locator("form[id='form-login'] h2");
-        this.MY_ACCOUNT_H2 = page.locator("//h2[normalize-space()='My Account']");
+        this.MY_ACCOUNT_H1 = page.locator(`//h1[normalize-space()='My Account']`);
         this.REGISTER_ACCOUNT_H1 = page.locator("//h1[normalize-space()='Register Account']");
         this.FORGOT_PASSWORD_H2 = page.getByRole('heading', { name: 'Forgot Your Password?' });
         this.REGISTRATION_SUCCESSFUL_TEXT = page.getByRole('heading', { name: 'Your Account Has Been Created!' });
@@ -49,5 +50,9 @@ export default class AuthElements {
         this.EMAIL_WARNING = page.getByText('E-Mail Address does not appear to be valid!');
         this.PASSWORD_WARNING = page.getByText('Password must be between 4 and 20 characters!');
         this.PRIVACY_POLICY_WARNING = page.getByText('Warning: You must agree to the Privacy Policy!');
+
+        // LOGOUT
+        this.LOGOUT_LINK = page.locator('//ul[@class="dropdown-menu dropdown-menu-right show"]//a[text()="Logout"]')
+        this.SUCCESSFULLY_LOGOUT_H1 = page.locator("//h1[normalize-space()='Account Logout']");
     }
 }

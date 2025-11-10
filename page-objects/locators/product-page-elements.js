@@ -6,12 +6,12 @@ export default class ProductElements {
         this.PRODUCT_TITLE_HEADING = page.locator('h1');
         this.FEATURED_H1 = page.getByRole('heading', { name: 'Featured' });
         this.PRICE_TEXT = page.locator("ul[class='list-unstyled'] li h2");
-        this.PRODUCT_ATTRIBUTES = page.locator("body > main:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(2)");
+        this.PRODUCT_ATTRIBUTES = page.locator(`#product-info`);
         this.PRODUCT_PRICE = page.locator(".price > .price-new");
         this.FILTER_OPTIONS = page.locator('#input-sort');
 
         // ADD / REMOVE CART
-        this.ADD_TO_CART_ICON = page.getByLabel('Add to Cart').nth(0);
+        this.ADD_TO_CART_ICON = page.getByRole('button', { name: 'Add to Cart' });
         this.BUTTON_CART = page.locator(".btn.btn-lg.btn-inverse.btn-block.dropdown-toggle");
         this.CART_BUTTON = page.locator(".btn.btn-lg.btn-inverse.btn-block.dropdown-toggle");
         this.CART_DROPDOWN_MENU = page.locator(".dropdown-menu.dropdown-menu-end.p-2.show");

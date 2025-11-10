@@ -18,13 +18,13 @@ test.describe('Login Scenarios POM', () => {
 
   test('User should be able to access all menus on the navbar', async ({}) => {
     await actions.loginFunctions(config.validUser.email, config.validUser.password)
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
+    await expect(locators.MY_ACCOUNT_H1).toBeVisible();
     await actions.accessAllNavbarMenus();
   });
 
   test('User should be able to access all menus on the footer', async ({}) => {
     await actions.loginFunctions(config.validUser.email, config.validUser.password)
-    await expect(locators.MY_ACCOUNT_H2).toBeVisible();
+    await expect(locators.MY_ACCOUNT_H1).toBeVisible();
     await actions.accessAllFooterMenus();
   });
 });
