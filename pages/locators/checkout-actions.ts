@@ -1,5 +1,5 @@
 import { type Page, expect } from '@playwright/test';
-import ProductElements from '../../page-objects/locators/product-page-elements';
+import ProductElements from '../../pages/locators/product-page-elements';
 
 export default class CheckoutActions {
     readonly page: Page;
