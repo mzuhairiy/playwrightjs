@@ -23,7 +23,7 @@
     "page-objects/**/*.ts",
     "utils/**/*.ts",
     "playwright.config.ts"
-  ],
+, "pages/locators/checkout-actions.ts", "pages/actions/layout-actions.ts", "pages/actions/login-actions.ts", "pages/actions/main-actions.ts", "pages/actions/product-actions.ts", "pages/actions/register-actions.ts", "pages/locators/auth-page-elements.ts", "pages/locators/layout-elements.ts", "pages/locators/main-page-elements.ts", "pages/locators/product-page-elements.ts"  ],
   "exclude": [
     "node_modules",
     "test-results",

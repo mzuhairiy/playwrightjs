@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { generateUserCreds } from '../utils/user-data-generator';
-import ResistStorePage from '../page-objects/actions/main-actions';
-import PageElements from '../page-objects/locators/main-page-elements';
+import ResistStorePage from '../pages/actions/main-actions';
+import PageElements from '../pages/locators/main-page-elements';
 import testNameData from '../tests/test-data/register-data-name-validation.json';
 import testPasswordData from '../tests/test-data/register-data-password-validation.json';
 import config from '../app-config/config.json';

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import LoginActions from '../page-objects/actions/login-actions';
-import AuthElements from '../page-objects/locators/auth-page-elements';
+import LoginActions from '../pages/actions/login-actions';
+import AuthElements from '../pages/locators/auth-page-elements';
 import config from '../app-config/config.json';
 import { logger } from '../utils/logger/logger';
 

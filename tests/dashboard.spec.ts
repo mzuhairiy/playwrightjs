@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import ResistStorePage from '../page-objects/actions/main-actions';
-import PageElements from '../page-objects/locators/main-page-elements';
+import ResistStorePage from '../pages/actions/main-actions';
+import PageElements from '../pages/locators/main-page-elements';
 import config from '../app-config/config.json';
 
 test.describe('Login Scenarios POM', () => {

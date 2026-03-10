@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { generateUserCheckoutData } from '../utils/user-data-generator';
-import ProductActions from '../page-objects/actions/product-actions';
-import LoginActions from '../page-objects/actions/login-actions';
-import ProductElements from '../page-objects/locators/product-page-elements';
-import AuthElements from '../page-objects/locators/auth-page-elements';
+import ProductActions from '../pages/actions/product-actions';
+import LoginActions from '../pages/actions/login-actions';
+import ProductElements from '../pages/locators/product-page-elements';
+import AuthElements from '../pages/locators/auth-page-elements';
 import config from '../app-config/config.json';
 import { logger } from '../utils/logger/logger';
 
