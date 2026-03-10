@@ -1,30 +1,32 @@
-import { expect } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 import LayoutElements from '../locators/layout-elements';
-import testData from '../../utils/data.json';
 
 export default class LayoutActions {
-    constructor(page) {
+    readonly page: Page;
+    readonly pageElements: LayoutElements;
+
+    constructor(page: Page) {
         this.page = page;
         this.pageElements = new LayoutElements(page);
     }
 
-    async gotoAsync(url) {
+    async gotoAsync(url: string): Promise<void> {
         await this.page.goto(url);
     }
 
-    async accessAllNavbarMenus() {
+    async accessAllNavbarMenus(): Promise<void> {
         const links = this.pageElements.NAVBAR_LINKS;
         const total = await links.count();
         console.log(`Total Navbar Links: ${total}`);
-            expect(total).toBeGreaterThan(0);
+        expect(total).toBeGreaterThan(0);
 
         for (let i = 0; i < total; i++) {
             const link = links.nth(i);
             const itemText = (await link.innerText()).trim();
 
             await Promise.all([
-            this.page.waitForNavigation({ waitUntil: 'load' }),
-            link.click(),
+                this.page.waitForNavigation({ waitUntil: 'load' }),
+                link.click(),
             ]);
 
             console.log(`Accessed Navbar Menu: ${itemText}`);
@@ -32,7 +34,7 @@ export default class LayoutActions {
         }
     }
 
-    async accessAllFooterMenus() {
+    async accessAllFooterMenus(): Promise<void> {
         const footerLinks = this.pageElements.FOOTER_LINKS;
         const count = await footerLinks.count();
         console.log(`Total footer links: ${count}`);
@@ -48,7 +50,7 @@ export default class LayoutActions {
         }
     }
 
-    async accessAllSidebarMenus() {
+    async accessAllSidebarMenus(): Promise<void> {
         const sidebarItems = this.pageElements.SIDEBAR_MENU;
         const itemCount = await sidebarItems.count();
 
@@ -61,5 +63,34 @@ export default class LayoutActions {
             await this.pageElements.HOME_ICON.click();
             await expect(this.pageElements.FEATURED_H1).toBeVisible();
         }
+    }
+
+    private async checkProductContent(): Promise<void> {
+        const products = this.page.locator('#product-list .product-thumb');
+        const count = await products.count();
+
+        if (count === 0) {
+            await expect(this.pageElements.NOT_FOUND_RESULT).toBeVisible();
+            const notFoundText = await this.pageElements.NOT_FOUND_RESULT.textContent();
+            console.log(`❌ No products found. Message: ${notFoundText?.trim()}`);
+            return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * count);
+        const randomProduct = products.nth(randomIndex);
+
+        const title = randomProduct.locator('h4 a');
+        const description = randomProduct.locator('.description p');
+        const price = randomProduct.locator('.price');
+
+        await expect(title).toBeVisible();
+        await expect(description).toBeVisible();
+        await expect(price).toBeVisible();
+
+        console.log(`✅ Checked product content:
+            Title: ${await title.textContent()}
+            Description: ${await description.textContent()}
+            Price: ${await price.textContent()}
+        `);
     }
 }

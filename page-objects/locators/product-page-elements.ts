@@ -1,6 +1,108 @@
+import { type Page, type Locator } from '@playwright/test';
+
 export default class ProductElements {
-    constructor(page) {
+    readonly page: Page;
+
+    // PRODUCT LIST / DETAILS
+    readonly PRODUCT_IMAGES: Locator;
+    readonly PRODUCT_TITLE_HEADING: Locator;
+    readonly FEATURED_H1: Locator;
+    readonly PRICE_TEXT: Locator;
+    readonly PRODUCT_ATTRIBUTES: Locator;
+    readonly PRODUCT_PRICE: Locator;
+    readonly FILTER_OPTIONS: Locator;
+
+    // ADD / REMOVE CART
+    readonly ADD_TO_CART_ICON: Locator;
+    readonly BUTTON_CART: Locator;
+    readonly CART_BUTTON: Locator;
+    readonly CART_DROPDOWN_MENU: Locator;
+    readonly VIEW_CART_DD_MENU: Locator;
+    readonly CHECKOUT_DD_MENU: Locator;
+    readonly REMOVE_FROM_CART_BTN: Locator;
+    readonly CART_CLOSE_BUTTON: Locator;
+    readonly CART_IS_EMPTY_TEXT: Locator;
+
+    // SUCCESS / ALERT MESSAGES
+    readonly ALERT_CLOSE_BTN: Locator;
+    readonly SUCCESS_ADD_TO_CART: Locator;
+    readonly SUCCESS_REMOVE_FROM_CART: Locator;
+    readonly CLOSE_SUCCESS_ADD_TO_CART_BTN: Locator;
+    readonly CLOSE_SUCCESS_REMOVE_BTN: Locator;
+
+    // CHECKOUT PAGE
+    readonly CHECKOUT_H1: Locator;
+    readonly RADIO_REGISTER_ACCOUNT: Locator;
+    readonly RADIO_GUEST_ACCOUNT: Locator;
+
+    // Customer info
+    readonly FIRSTNAME_FIELD_CO: Locator;
+    readonly LASTNAME_FIELD_CO: Locator;
+    readonly EMAIL_FIELD_CO: Locator;
+    readonly COMPANY_FIELD_CO: Locator;
+    readonly ADDRESS1_FIELD_CO: Locator;
+    readonly ADDRESS2_FIELD_CO: Locator;
+    readonly CITY_FIELD_CO: Locator;
+    readonly POSTCODE_FIELD_CO: Locator;
+    readonly COUNTRY_DROPDOWN_CO: Locator;
+    readonly REGION_DROPDOWN_CO: Locator;
+    readonly PASSWORD_FOR_REGISTERED_ACC: Locator;
+    readonly TOGGLE_NEWSLETTER: Locator;
+    readonly TOGGLE_PRIVACY_POLICY: Locator;
+
+    // Checkout actions
+    readonly CONTINUE_CO_BTN: Locator;
+    readonly COMMENT_FIELD_CO: Locator;
+    readonly DETAILS_FIELD_CO: Locator;
+    readonly TOTAL_CO: Locator;
+    readonly CHOOSE_PAYMENT_METHOD_BTN: Locator;
+    readonly CHOOSE_SHIPPING_METHOD_BTN: Locator;
+    readonly MODAL_DIALOG_PAYMENT_METHOD: Locator;
+    readonly MODAL_DIALOG_SHIPPING_METHOD: Locator;
+    readonly RADIO_BANK_TRANSFER: Locator;
+    readonly RADIO_FLAT_SHIPPING: Locator;
+    readonly CONTINUE_MODAL_PAYMENT: Locator;
+    readonly CONTINUE_MODAL_SHIPPING: Locator;
+    readonly BANK_TRANSFER_INSTRUCTIONS: Locator;
+
+    readonly SUCCESS_GUEST_USER_INFORMATION: Locator;
+    readonly SUCCESS_REGIST_USER_INFORMATION: Locator;
+    readonly SUCCESS_UPDATE_USER_INFORMATION: Locator;
+
+    // ORDER CONFIRMATION
+    readonly CONFIRM_ORDER_BTN: Locator;
+    readonly SUCCESS_ORDER_H1: Locator;
+    readonly CONTINUE_SUCCESS_ORDER_BTN: Locator;
+
+    // PRODUCT COMPARISON
+    readonly COMPARE_PRODUCT_BTN: Locator;
+    readonly PRODUCT_COMPARISON_LINK: Locator;
+    readonly PRODUCT_COMPARISON_H1: Locator;
+    readonly PRODUCT_COMPARISON_CONTENT_TABLE: Locator;
+
+    // NAVIGATION
+    readonly MY_ACCOUNT_H1: Locator;
+    readonly NAV_DESKTOPS: Locator;
+    readonly NAV_DESKTOPS_H2: Locator;
+    readonly PRODUCT_PAGE_ADD_TO_CART_BTN: Locator;
+    readonly H1_PRODUCT: Locator;
+
+    // SEARCH
+    readonly SEARCH_INPUT: Locator;
+    readonly SEARCH_BUTTON: Locator;
+    readonly SEARCH_RESULT_H1: Locator;
+    readonly NOT_FOUND_RESULT: Locator;
+    readonly PRODUCT_TITLE: Locator;
+
+    // SIDEBAR
+    readonly SIDE_BAR_LINKS_ON_PRODUCT_PAGE: Locator;
+
+    // NAVBAR
+    readonly NAVBAR_LINKS: Locator;
+
+    constructor(page: Page) {
         this.page = page;
+
         // PRODUCT LIST / DETAILS
         this.PRODUCT_IMAGES = page.locator(".product-thumb");
         this.PRODUCT_TITLE_HEADING = page.locator('h1');
@@ -11,7 +113,7 @@ export default class ProductElements {
         this.FILTER_OPTIONS = page.locator('#input-sort');
 
         // ADD / REMOVE CART
-        this.ADD_TO_CART_ICON = page.getByRole('button', { name: 'Add to Cart' });
+        this.ADD_TO_CART_ICON = page.locator("button[aria-label='Add to Cart']");
         this.BUTTON_CART = page.locator(".btn.btn-lg.btn-inverse.btn-block.dropdown-toggle");
         this.CART_BUTTON = page.locator(".btn.btn-lg.btn-inverse.btn-block.dropdown-toggle");
         this.CART_DROPDOWN_MENU = page.locator(".dropdown-menu.dropdown-menu-end.p-2.show");
@@ -69,7 +171,7 @@ export default class ProductElements {
 
         // ORDER CONFIRMATION
         this.CONFIRM_ORDER_BTN = page.locator("//button[@id='button-confirm']");
-        this.SUCCESS_ORDER_H1 = page.getByRole('heading', { name: 'Your order has been placed!'});
+        this.SUCCESS_ORDER_H1 = page.getByRole('heading', { name: 'Your order has been placed!' });
         this.CONTINUE_SUCCESS_ORDER_BTN = page.getByRole('link', { name: 'Continue' });
 
         // PRODUCT COMPARISON
@@ -77,5 +179,25 @@ export default class ProductElements {
         this.PRODUCT_COMPARISON_LINK = page.locator('#alert .alert-success a:nth-of-type(2)');
         this.PRODUCT_COMPARISON_H1 = page.locator("div[id='content'] h1");
         this.PRODUCT_COMPARISON_CONTENT_TABLE = page.locator("#content table");
+
+        // NAVIGATION
+        this.MY_ACCOUNT_H1 = page.locator(`//h1[normalize-space()='My Account']`);
+        this.NAV_DESKTOPS = page.locator('main li:nth-child(1) a:nth-child(1)');
+        this.NAV_DESKTOPS_H2 = page.locator("//h2[contains(text(),'Desktops')]");
+        this.PRODUCT_PAGE_ADD_TO_CART_BTN = page.locator('div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > form:nth-child(2) > div:nth-child(1) > button:nth-child(1)');
+        this.H1_PRODUCT = page.locator("//h1[contains(text(),'Apple Cinema 30\"')]");
+
+        // SEARCH
+        this.SEARCH_INPUT = page.locator('#search input[name="search"]');
+        this.SEARCH_BUTTON = page.locator("//button[@class='btn btn-light btn-lg']");
+        this.SEARCH_RESULT_H1 = page.locator("div[id='content'] h1");
+        this.NOT_FOUND_RESULT = page.locator("//p[normalize-space()='There is no product that matches the search criteria.']");
+        this.PRODUCT_TITLE = page.locator('#product-list .product-thumb h4 a');
+
+        // SIDEBAR
+        this.SIDE_BAR_LINKS_ON_PRODUCT_PAGE = page.locator("#column-left .list-group .list-group-item");
+
+        // NAVBAR
+        this.NAVBAR_LINKS = page.locator('#menu .nav-link');
     }
 }

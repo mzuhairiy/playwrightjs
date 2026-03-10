@@ -1,22 +1,20 @@
 import { test, expect } from '@playwright/test';
-import LoginPage from "../page-objects/actions/login-actions";
+import LoginActions from '../page-objects/actions/login-actions';
 import AuthElements from '../page-objects/locators/auth-page-elements';
 import config from '../app-config/config.json';
-import { logger, addTestInfo } from '../utils/logger/logger.js';
+import { logger } from '../utils/logger/logger';
 
 /**
- * @file Login test scenarios for Opencart application
- * @description Tests covering login functionality including positive and negative cases
+ * Login test scenarios for Opencart application
+ * Tests covering login functionality including positive and negative cases
  */
 
 test.describe('Login Functionality Tests', () => {
-  /** @type {LoginPage} */
-  let loginActions;
-  /** @type {AuthElements} */
-  let authElements;
+  let loginActions: LoginActions;
+  let authElements: AuthElements;
 
   test.beforeEach(async ({ page }) => {
-    loginActions = new LoginPage(page);
+    loginActions = new LoginActions(page);
     authElements = new AuthElements(page);
     await loginActions.gotoAsync(config.baseURL);
     await expect(page).toHaveTitle(/Resist Store/, { timeout: 10000 });

@@ -1,8 +1,8 @@
-const winston = require('winston');
-const path = require('path');
+import winston from 'winston';
+import path from 'path';
 
 // Define log levels
-const levels = {
+const levels: Record<string, number> = {
     error: 0,
     warn: 1,
     info: 2,
@@ -10,7 +10,7 @@ const levels = {
 };
 
 // Define colors for each level
-const colors = {
+const colors: Record<string, string> = {
     error: 'red',
     warn: 'yellow',
     info: 'green',
@@ -48,13 +48,10 @@ const logger = winston.createLogger({
 winston.addColors(colors);
 
 // Add test context information to logs
-const addTestInfo = (testInfo) => {
-    return (message) => {
+const addTestInfo = (testInfo: { title: string }) => {
+    return (message: string): string => {
         return `[${testInfo.title}] ${message}`;
     };
 };
 
-module.exports = {
-    logger,
-    addTestInfo
-};
+export { logger, addTestInfo };

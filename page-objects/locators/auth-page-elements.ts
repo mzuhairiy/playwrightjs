@@ -1,6 +1,68 @@
+import { type Page, type Locator } from '@playwright/test';
+
 export default class AuthElements {
-    constructor(page) {
+    readonly page: Page;
+
+    // LINKS / NAVIGATION
+    readonly REGISTER_LINK: Locator;
+    readonly LOGIN_LINK: Locator;
+    readonly MY_ACCOUNT_DROPDOWN: Locator;
+    readonly HOME_ICON: Locator;
+    readonly LOGIN_PAGE_LINK_REG: Locator;
+    readonly PRIVACY_POLICY_LINK: Locator;
+
+    // HEADINGS / TITLES
+    readonly OPENCART_LOGO: Locator;
+    readonly H2_RETURNING_CUSTOMER: Locator;
+    readonly MY_ACCOUNT_H1: Locator;
+    readonly REGISTER_ACCOUNT_H1: Locator;
+    readonly FORGOT_PASSWORD_H2: Locator;
+    readonly REGISTRATION_SUCCESSFUL_TEXT: Locator;
+
+    // LOGIN FORM
+    readonly EMAIL_FIELD: Locator;
+    readonly PASSWORD_FIELD: Locator;
+    readonly LOGIN_BTN: Locator;
+    readonly FORGOTTEN_PASSWORD_LINK: Locator;
+
+    // REGISTER FORM
+    readonly FIRST_NAME_FIELD: Locator;
+    readonly LAST_NAME_FIELD: Locator;
+    readonly REGISTER_EMAIL_FIELD: Locator;
+    readonly REGISTER_PASSWORD_FIELD: Locator;
+    readonly SUBS_NEWSLETTER_TOOGLE: Locator;
+    readonly PRIVACY_POLICY_TOOGLE: Locator;
+    readonly REGISTER_CONTINUE_BUTTON: Locator;
+    readonly REGISTER_CONTINUE_TO_ACCOUNT_BTN: Locator;
+    readonly CONTINUE_REGISTER_BTN: Locator;
+
+    // FORGOT PASSWORD FORM
+    readonly FORGOT_PASSWORD_EMAIL_FIELD: Locator;
+    readonly CONTINUE_FORGOT_PASSWORD: Locator;
+
+    // SUCCESS / FAILURE MESSAGES
+    readonly ERROR_ALERT: Locator;
+    readonly SUCCESS_FORGOT_PASSWORD: Locator;
+    readonly FAILED_FORGOT_PASSWORD: Locator;
+    readonly REGISTRATION_FAILURE_TEXT: Locator;
+
+    // WARNINGS (VALIDATION)
+    readonly FIRST_NAME_WARNING: Locator;
+    readonly LAST_NAME_WARNING: Locator;
+    readonly EMAIL_WARNING: Locator;
+    readonly PASSWORD_WARNING: Locator;
+    readonly PRIVACY_POLICY_WARNING: Locator;
+
+    // LOGOUT
+    readonly LOGOUT_LINK: Locator;
+    readonly SUCCESSFULLY_LOGOUT_H1: Locator;
+
+    // FEATURED
+    readonly FEATURED_H1: Locator;
+
+    constructor(page: Page) {
         this.page = page;
+
         // LINKS / NAVIGATION
         this.REGISTER_LINK = this.page.locator("//a[normalize-space()='Register']");
         this.LOGIN_LINK = this.page.locator("//a[normalize-space()='Login']");
@@ -10,7 +72,7 @@ export default class AuthElements {
         this.PRIVACY_POLICY_LINK = page.locator('#form-register').getByRole('link', { name: 'Privacy Policy' });
 
         // HEADINGS / TITLES
-        this.OPENCART_LOGO = page.getByRole('img', { name: 'Resist Store' })
+        this.OPENCART_LOGO = page.getByRole('img', { name: 'Resist Store' });
         this.H2_RETURNING_CUSTOMER = page.locator("form[id='form-login'] h2");
         this.MY_ACCOUNT_H1 = page.locator(`//h1[normalize-space()='My Account']`);
         this.REGISTER_ACCOUNT_H1 = page.locator("//h1[normalize-space()='Register Account']");
@@ -52,7 +114,10 @@ export default class AuthElements {
         this.PRIVACY_POLICY_WARNING = page.getByText('Warning: You must agree to the Privacy Policy!');
 
         // LOGOUT
-        this.LOGOUT_LINK = page.locator('//ul[@class="dropdown-menu dropdown-menu-right show"]//a[text()="Logout"]')
+        this.LOGOUT_LINK = page.locator('//ul[@class="dropdown-menu dropdown-menu-right show"]//a[text()="Logout"]');
         this.SUCCESSFULLY_LOGOUT_H1 = page.locator("//h1[normalize-space()='Account Logout']");
+
+        // FEATURED
+        this.FEATURED_H1 = page.getByRole('heading', { name: 'Featured' });
     }
 }

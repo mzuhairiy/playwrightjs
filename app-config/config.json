@@ -1,5 +1,5 @@
 {
-  "baseURL": "http://localhost/demo/index.php?route=common/home&language=en-gb",
+  "baseURL": "http://127.0.0.1/opencart/",
   "validUser": {
     "email": "Kendrick.Smitham90@hotmail.com",
     "password": "abcd1234"

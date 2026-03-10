@@ -1,27 +1,22 @@
 import { test, expect } from '@playwright/test';
 import { generateUserCheckoutData } from '../utils/user-data-generator';
 import ProductActions from '../page-objects/actions/product-actions';
-import LoginAction from '../page-objects/actions/login-actions';
+import LoginActions from '../page-objects/actions/login-actions';
 import ProductElements from '../page-objects/locators/product-page-elements';
 import AuthElements from '../page-objects/locators/auth-page-elements';
 import config from '../app-config/config.json';
-import { logger } from '../utils/logger/logger.js';
-import LoginActions from '../page-objects/actions/login-actions';
+import { logger } from '../utils/logger/logger';
 
 /**
- * @file Product test scenarios for Opencart application
- * @description Tests covering product functionality including viewing, searching, cart operations, and checkout
+ * Product test scenarios for Opencart application
+ * Tests covering product functionality including viewing, searching, cart operations, and checkout
  */
 
 test.describe('Product Functionality Tests', () => {
-  /** @type {ProductActions} */
-  let productActions;
-  /** @type {LoginActions} */
-  let loginActions;
-  /** @type {ProductElements} */
-  let productElements;
-  /** @type {AuthElements} */
-  let authElements ;
+  let productActions: ProductActions;
+  let loginActions: LoginActions;
+  let productElements: ProductElements;
+  let authElements: AuthElements;
 
   test.beforeEach(async ({ page }) => {
     productActions = new ProductActions(page);
@@ -38,10 +33,10 @@ test.describe('Product Functionality Tests', () => {
     await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
     await expect(productElements.FEATURED_H1).toBeVisible();
-    
+
     await productActions.selectRandomProductFromHomepage();
     const title = await productActions.assertProductTitleAndAttributes();
-    
+
     await expect(productElements.PRODUCT_TITLE_HEADING).toBeVisible();
     await expect(productElements.PRODUCT_ATTRIBUTES).toBeVisible();
     expect(title).not.toBeNull();
@@ -73,7 +68,7 @@ test.describe('Product Functionality Tests', () => {
   test('should complete guest checkout process', async ({ page }) => {
     const userData = generateUserCheckoutData();
     logger.info('Starting guest checkout process');
-    
+
     const randomIndex = await productActions.addARandomProductFromHomepageToCart();
     await productActions.guestCheckoutFromHomepage(userData);
     await productActions.selectRandomCountry();
@@ -87,7 +82,7 @@ test.describe('Product Functionality Tests', () => {
       await productActions.chooseShippingMethod();
       await productActions.choosePaymentMethod();
     }
-    
+
     await productElements.COMMENT_FIELD_CO.fill("test checkout");
     await page.waitForTimeout(3000);
     await productElements.CONFIRM_ORDER_BTN.click();
@@ -101,7 +96,7 @@ test.describe('Product Functionality Tests', () => {
     await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
     await expect(productElements.FEATURED_H1).toBeVisible();
-    
+
     await productActions.compareRandomProduct();
     await expect(productElements.PRODUCT_COMPARISON_H1).toBeVisible();
     await expect(productElements.PRODUCT_COMPARISON_CONTENT_TABLE).toBeVisible();
@@ -113,7 +108,7 @@ test.describe('Product Functionality Tests', () => {
     await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
     await expect(productElements.FEATURED_H1).toBeVisible();
-    
+
     await productActions.addARandomProductFromHomepageToCart();
     await productActions.CheckRemoveAProductFromCart();
     logger.info('Successfully removed single product from cart');
@@ -124,7 +119,7 @@ test.describe('Product Functionality Tests', () => {
     await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
     await expect(productElements.FEATURED_H1).toBeVisible();
-    
+
     await productActions.addMultipleProductsFromHomepageToCart(2);
     await productActions.CheckRemoveProductsFromCart();
     logger.info('Successfully removed multiple products from cart');
@@ -135,7 +130,7 @@ test.describe('Product Functionality Tests', () => {
     await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
     await expect(productElements.FEATURED_H1).toBeVisible();
-    
+
     const searchResult = await productActions.searchForProduct();
     logger.info(`Successfully searched for product: ${searchResult}`);
   });
@@ -144,7 +139,7 @@ test.describe('Product Functionality Tests', () => {
     await loginActions.loginFunctions(config.validUser.email, config.validUser.password);
     await expect(authElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
-    
+
     await productActions.searchNonExistingProduct('skincare');
     logger.info('Successfully verified not found message for non-existing product');
   });
@@ -154,11 +149,11 @@ test.describe('Product Functionality Tests', () => {
     await expect(productElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
     await expect(productElements.FEATURED_H1).toBeVisible();
-    
+
     await productActions.searchForProduct();
     await productActions.selectSortOption('Price (Low > High)');
     await expect(productElements.PRODUCT_PRICE.first()).toBeVisible();
-    
+
     const prices = await productActions.getAllPrices();
     const sortedAscending = productActions.isSortedAscending(prices);
     expect(sortedAscending).toBeTruthy();
@@ -170,11 +165,11 @@ test.describe('Product Functionality Tests', () => {
     await expect(productElements.MY_ACCOUNT_H1).toBeVisible();
     await authElements.OPENCART_LOGO.click();
     await expect(productElements.FEATURED_H1).toBeVisible();
-    
+
     await productActions.searchForProduct();
     await productActions.selectSortOption('Price (High > Low)');
     await expect(productElements.PRODUCT_PRICE.first()).toBeVisible();
-    
+
     const prices = await productActions.getAllPrices();
     const sortedDescending = productActions.isSortedDescending(prices);
     expect(sortedDescending).toBeTruthy();
@@ -187,5 +182,5 @@ test.describe('Product Functionality Tests', () => {
     await productActions.accessAllNavbarMenus(true);
     await productActions.accessAllSidebarMenus();
     logger.info('Successfully accessed all sidebar menus');
-});
+  });
 });
